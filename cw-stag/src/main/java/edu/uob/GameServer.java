@@ -30,6 +30,9 @@ public final class GameServer {
     */
     public GameServer(File entitiesFile, File actionsFile) {
         // TODO implement your server logic here
+        if(!(GameLoading.loadEntitiesData(entitiesFile) || GameLoading.loadActionData(actionsFile))){
+            System.out.println("loading data error");
+        }
     }
 
     /**

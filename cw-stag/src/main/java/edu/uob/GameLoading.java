@@ -26,10 +26,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class GameLoading {
-    public static boolean loadEntitiesData(){
+    public static boolean loadEntitiesData(File entitiesFile){
         try {
             Parser parser = new Parser();
-            FileReader reader = new FileReader("config" + File.separator + "extended-entities.dot");
+            //FileReader reader = new FileReader("config" + File.separator + "extended-entities.dot");
+            FileReader reader = new FileReader(entitiesFile);
             parser.parse(reader);
 
             Graph wholeDocument = parser.getGraphs().get(0);//找到第一个大图
@@ -97,10 +98,11 @@ public class GameLoading {
         }
     }
 
-    public static boolean loadActionData(){
+    public static boolean loadActionData(File actionsFile){
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse("config" + File.separator + "extended-actions.xml");
+            //Document document = builder.parse("config" + File.separator + "extended-actions.xml");
+            Document document = builder.parse(actionsFile);
             Element root = document.getDocumentElement();
             NodeList actions = root.getChildNodes();
 
@@ -167,7 +169,7 @@ public class GameLoading {
     }
 
     public static void main(String[] args){
-        boolean a =loadActionData();
-        System.out.println(a);
+        //boolean a =loadActionData();
+        //System.out.println(a);
     }
 }
