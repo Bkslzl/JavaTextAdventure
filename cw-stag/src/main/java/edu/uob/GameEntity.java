@@ -1,5 +1,7 @@
 package edu.uob;
 
+import java.util.ArrayList;
+
 public abstract class GameEntity
 {
     private String name;

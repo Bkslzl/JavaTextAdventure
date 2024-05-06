@@ -5,25 +5,31 @@ import com.alexmerz.graphviz.Parser;
 import com.alexmerz.graphviz.objects.Edge;
 import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
+import edu.uob.Actions.GameAction;
 import edu.uob.Entities.Artefacts;
 import edu.uob.Entities.Characters;
 import edu.uob.Entities.Furniture;
 import edu.uob.Entities.Location;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
-
-public class GameAction
-{
-    public static boolean loadGameData(){
+public class GameLoading {
+    public static boolean loadEntitiesData(){
         try {
             Parser parser = new Parser();
-            FileReader reader = new FileReader("cw-stag" + File.separator +
-                    "config" + File.separator +
-                    "extended-entities.dot");
+            FileReader reader = new FileReader("config" + File.separator + "extended-entities.dot");
             parser.parse(reader);
 
             Graph wholeDocument = parser.getGraphs().get(0);//找到第一个大图
@@ -91,13 +97,77 @@ public class GameAction
         }
     }
 
+    public static boolean loadActionData(){
+        try {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = builder.parse("config" + File.separator + "extended-actions.xml");
+            Element root = document.getDocumentElement();
+            NodeList actions = root.getChildNodes();
+
+            for (int i = 1; i < actions.getLength(); i+=2) {
+                Element action = (Element) actions.item(i);
+
+                ArrayList<String> consumedEntities = new ArrayList<>();
+                ArrayList<String> neededEntities = new ArrayList<>();
+                ArrayList<String> producedEntities = new ArrayList<>();
+
+                getActionsFromXML(neededEntities, action, "subjects");
+
+                getActionsFromXML(consumedEntities, action, "consumed");
+
+                getActionsFromXML(producedEntities, action, "produced");
+
+                Element narration = (Element) action.getElementsByTagName("narration").item(0);
+                String narrationText = narration.getTextContent();  // 提取文本内容
+
+                GameAction newAction = new GameAction(narrationText, consumedEntities, neededEntities, producedEntities);
+
+                getTriggersAndLoadTheHashList(action, newAction);
+            }
+        } catch(ParserConfigurationException | IOException | SAXException pce) {
+            return false;
+        }
+        return true;
+    }
+
+    private static void getActionsFromXML(ArrayList<String> neededEntities, Element action, String keyWord) {
+        NodeList subjectsList = action.getElementsByTagName(keyWord);
+        for (int t = 0; t < subjectsList.getLength(); t++) { // 遍历所有 <subjects> 元素
+            Element subjects = (Element) subjectsList.item(t);
+            NodeList subjectEntities = subjects.getElementsByTagName("entity"); // 获取当前 <subjects> 下所有的 <entity>
+
+            for (int j = 0; j < subjectEntities.getLength(); j++) {
+                String entity = subjectEntities.item(j).getTextContent(); // 获取 <entity> 文本
+                neededEntities.add(entity);
+                System.out.println(" - " + entity);
+            }
+        }
+    }
+
+    private static void getTriggersAndLoadTheHashList(Element action, GameAction newAction){
+        NodeList triggersList = action.getElementsByTagName("triggers"); // 获取所有的 <triggers>
+        for (int t = 0; t < triggersList.getLength(); t++) { // 遍历所有 <triggers> 元素
+            Element triggers = (Element) triggersList.item(t);
+            NodeList keyphrases = triggers.getElementsByTagName("keyphrase"); // 获取当前 <triggers> 下所有的 <keyphrase>
+
+            for (int j = 0; j < keyphrases.getLength(); j++) {
+                String keyphrase = keyphrases.item(j).getTextContent(); // 获取 <keyphrase> 文本
+
+                HashSet<GameAction> gameActions = new HashSet<>();
+                gameActions.add(newAction);
+                GameAction.hashActions.put(keyphrase, gameActions);
+
+                System.out.println(" - " + keyphrase);//获得了两个关键词中的一个
+            }
+        }
+    }
+
     public static void handleCommand(){
 
     }
 
     public static void main(String[] args){
-
-        boolean a =loadGameData();
+        boolean a =loadActionData();
         System.out.println(a);
     }
 }

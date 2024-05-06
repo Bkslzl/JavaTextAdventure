@@ -1,0 +1,13 @@
+package edu.uob.Entities;
+
+import edu.uob.GameEntity;
+
+import java.util.ArrayList;
+
+public class NewEntities extends GameEntity {
+    public static ArrayList<GameEntity> newEntitiesList = new ArrayList<>();
+
+    public NewEntities(String name, String description) {
+        super(name, description);
+    }
+}
