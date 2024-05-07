@@ -1,8 +1,11 @@
 package edu.uob.Interpreter;
 
+import edu.uob.GameOperations.GameAction;
 import edu.uob.Players;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class CommandParser {
     public static void handleCommand(String originalCommand){
@@ -14,6 +17,7 @@ public class CommandParser {
     private static boolean handleBasicCommand(Players player, String originalCommand){
         //String[] tokens = originalCommand.split("\\s+");
         String actionKeyWord = CommandChecker.checkActionValidationAndFindTheCurrentOne(originalCommand);
+        System.out.println(actionKeyWord);
         if(actionKeyWord == null){
             return false;
         }
@@ -35,7 +39,23 @@ public class CommandParser {
             return LookInterpreter.handleCommandLook(player, entitiesList);
         }
 
+        else if(findTheGameAction(actionKeyWord) != null){
+            GameAction theAction = findTheGameAction(actionKeyWord);
+            return ActionInterpreter.handleCommandActions(theAction, player, entitiesList);
+        }
+
         return true;
+    }
+
+    private static GameAction findTheGameAction(String actionKeyWord){
+        HashSet<GameAction> retrievedActions = GameAction.hashActions.get(actionKeyWord);
+        if (retrievedActions != null && !retrievedActions.isEmpty()) {
+            Iterator<GameAction> iterator = retrievedActions.iterator();
+            return iterator.next();  // 获取第一个元素
+        } else {
+            System.out.println("No actions available for the keyword: " + actionKeyWord);
+            return null;
+        }
     }
 
 }

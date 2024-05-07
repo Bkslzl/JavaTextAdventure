@@ -1,5 +1,6 @@
 package edu.uob;
 
+import edu.uob.Interpreter.CommandParser;
 import edu.uob.Tools.GameLoading;
 import edu.uob.Tools.Output;
 
@@ -47,7 +48,9 @@ public final class GameServer {
         Output.changeOutputStream();
         Output.data.reset();
 
-        return "" + Output.data;
+        CommandParser.handleCommand(command);
+
+        return Output.data.toString();
     }
 
     /**

@@ -30,7 +30,9 @@ import java.util.Scanner;
 
 public class GameLoading {
     public static void loadGameData(File entitiesFile, File actionsFile){
-        if(!(GameLoading.loadEntitiesData(entitiesFile) || GameLoading.loadActionData(actionsFile))){
+        boolean entitiesLoading = GameLoading.loadEntitiesData(entitiesFile);
+        boolean actionLoading = GameLoading.loadActionData(actionsFile);
+        if(! (entitiesLoading || actionLoading)){
             System.out.println("loading data error");
         }
     }
@@ -133,6 +135,7 @@ public class GameLoading {
 
                 Element narration = (Element) action.getElementsByTagName("narration").item(0);
                 String narrationText = narration.getTextContent();  // 提取文本内容
+                //System.out.println(narrationText);
 
                 GameAction newAction = new GameAction(narrationText, consumedEntities, neededEntities, producedEntities);
 
@@ -153,7 +156,7 @@ public class GameLoading {
             for (int j = 0; j < subjectEntities.getLength(); j++) {
                 String entity = subjectEntities.item(j).getTextContent(); // 获取 <entity> 文本
                 neededEntities.add(entity);
-                System.out.println(" - " + entity);
+                //System.out.println(" - " + entity);
             }
         }
     }
@@ -171,7 +174,7 @@ public class GameLoading {
                 gameActions.add(newAction);
                 GameAction.hashActions.put(keyphrase, gameActions);
 
-                System.out.println(" - " + keyphrase);//获得了两个关键词中的一个
+                //System.out.println(" - " + keyphrase);//获得了两个关键词中的一个
             }
         }
     }
