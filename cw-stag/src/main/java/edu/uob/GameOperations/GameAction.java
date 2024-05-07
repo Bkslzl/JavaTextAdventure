@@ -1,10 +1,8 @@
-package edu.uob.Actions;
+package edu.uob.GameOperations;
 
 import edu.uob.Entities.Artefacts;
 import edu.uob.Entities.Location;
 import edu.uob.Entities.NewEntities;
-import edu.uob.GameClient;
-import edu.uob.GameEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

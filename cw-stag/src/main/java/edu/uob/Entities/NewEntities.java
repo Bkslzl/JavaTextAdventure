@@ -1,7 +1,5 @@
 package edu.uob.Entities;
 
-import edu.uob.GameEntity;
-
 import java.util.ArrayList;
 
 public class NewEntities extends GameEntity {

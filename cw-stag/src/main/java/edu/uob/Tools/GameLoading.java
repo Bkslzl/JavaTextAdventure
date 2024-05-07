@@ -1,15 +1,15 @@
-package edu.uob;
+package edu.uob.Tools;
 
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.Parser;
 import com.alexmerz.graphviz.objects.Edge;
 import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
-import edu.uob.Actions.GameAction;
 import edu.uob.Entities.Artefacts;
 import edu.uob.Entities.Characters;
 import edu.uob.Entities.Furniture;
 import edu.uob.Entities.Location;
+import edu.uob.GameOperations.GameAction;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -26,11 +26,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class GameLoading {
-    public static boolean loadEntitiesData(File entitiesFile){
+    public static void loadGameData(File entitiesFile, File actionsFile){
+        if(!(GameLoading.loadEntitiesData(entitiesFile) || GameLoading.loadActionData(actionsFile))){
+            System.out.println("loading data error");
+        }
+    }
+
+    private static boolean loadEntitiesData(File entitiesFile){
         try {
             Parser parser = new Parser();
-            //FileReader reader = new FileReader("config" + File.separator + "extended-entities.dot");
-            FileReader reader = new FileReader(entitiesFile);
+            FileReader reader = new FileReader("config" + File.separator + "extended-entities.dot");
+            //FileReader reader = new FileReader(entitiesFile);
             parser.parse(reader);
 
             Graph wholeDocument = parser.getGraphs().get(0);//找到第一个大图
@@ -98,11 +104,11 @@ public class GameLoading {
         }
     }
 
-    public static boolean loadActionData(File actionsFile){
+    private static boolean loadActionData(File actionsFile){
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            //Document document = builder.parse("config" + File.separator + "extended-actions.xml");
-            Document document = builder.parse(actionsFile);
+            Document document = builder.parse("config" + File.separator + "extended-actions.xml");
+            //Document document = builder.parse(actionsFile);
             Element root = document.getDocumentElement();
             NodeList actions = root.getChildNodes();
 
@@ -164,12 +170,6 @@ public class GameLoading {
         }
     }
 
-    public static void handleCommand(){
-
-    }
-
     public static void main(String[] args){
-        //boolean a =loadActionData();
-        //System.out.println(a);
     }
 }

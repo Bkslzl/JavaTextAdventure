@@ -1,5 +1,8 @@
 package edu.uob;
 
+import edu.uob.Tools.GameLoading;
+import edu.uob.Tools.Output;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,9 +33,7 @@ public final class GameServer {
     */
     public GameServer(File entitiesFile, File actionsFile) {
         // TODO implement your server logic here
-        if(!(GameLoading.loadEntitiesData(entitiesFile) || GameLoading.loadActionData(actionsFile))){
-            System.out.println("loading data error");
-        }
+        GameLoading.loadGameData(entitiesFile,actionsFile);
     }
 
     /**
@@ -43,7 +44,10 @@ public final class GameServer {
     */
     public String handleCommand(String command) {
         // TODO implement your server logic here
-        return "";
+        Output.changeOutputStream();
+        Output.data.reset();
+
+        return "" + Output.data;
     }
 
     /**

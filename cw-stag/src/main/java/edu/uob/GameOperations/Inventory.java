@@ -1,0 +1,16 @@
+package edu.uob.GameOperations;
+
+import edu.uob.Players;
+
+public class Inventory {
+    public static void printThePlayerInventory(Players player){
+        if(player.inventory.isEmpty()){
+            System.out.println("There is nothing in the inventory.");
+            return;
+        }
+        System.out.println("All artefacts you have are shown below:");
+        for (String item : player.inventory) {
+            System.out.println(item);
+        }
+    }
+}
