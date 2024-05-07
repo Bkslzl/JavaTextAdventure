@@ -8,9 +8,12 @@ public class Players {
     public String currentLocation;
     public ArrayList<String> inventory = new ArrayList<>();
 
+    public int health;
+
     public Players(String name, String locationCreated){
         this.name = name;
         this.currentLocation = locationCreated;
+        this.health = 3;
     }
 
     public void pickUpItem(String item){

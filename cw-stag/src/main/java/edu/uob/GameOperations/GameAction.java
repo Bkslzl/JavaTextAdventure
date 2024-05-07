@@ -5,6 +5,7 @@ import edu.uob.Entities.Characters;
 import edu.uob.Entities.Furniture;
 import edu.uob.Entities.Location;
 import edu.uob.Players;
+import edu.uob.Tools.GameLoading;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +42,16 @@ public class GameAction {
     }
 
     private static void findTheItemAndConsumeIt(String item, Players player){
+        if(item.equalsIgnoreCase("health")){
+            player.health -= 1;
+            if(player.health <= 0){
+                playerDead(player);
+            }
+            return;
+        }
+
+        removeSpecificItemInInventory(player, item);
+
         for (Artefacts artefact : Location.artefactsList) {
             if (artefact.getName().equalsIgnoreCase(item)) {
                 artefact.changeLocation("storeroom");
@@ -72,6 +83,17 @@ public class GameAction {
         }
     }
 
+    private static void removeSpecificItemInInventory(Players player, String item){
+        Iterator<String> iterator = player.inventory.iterator();
+        while (iterator.hasNext()) {
+            String inventoryItem = iterator.next();
+            if (inventoryItem.equalsIgnoreCase(item)) {
+                iterator.remove();  // 使用迭代器的 remove 方法删除元素
+                return;
+            }
+        }
+    }
+
     public static void removePath(String start, String end) {
         Iterator<String> iterator = Location.theMap.iterator();
         while (iterator.hasNext()) {
@@ -86,6 +108,14 @@ public class GameAction {
     }
 
     private static void produceTheItemInTheLocation(String item, Players player) {
+        if(item.equalsIgnoreCase("health")){
+            if(player.health < 3){
+                player.health++;
+            }
+            System.out.println("You get a health.");
+            return;
+        }
+
         for (Artefacts artefact : Location.artefactsList) {
             if (artefact.getName().equalsIgnoreCase(item)) {
                 artefact.changeLocation(player.currentLocation);
@@ -115,6 +145,24 @@ public class GameAction {
                 return;
             }
         }
+    }
+
+    private static void playerDead(Players player){
+        Iterator<String> inventoryIterator = player.inventory.iterator();
+        while (inventoryIterator.hasNext()) {
+            String droppedItem = inventoryIterator.next();
+            for (Artefacts artefact : Location.artefactsList) {
+                if (artefact.getName().equalsIgnoreCase(droppedItem)) {
+                    artefact.changeLocation(player.currentLocation);  // 更改物品位置
+                    artefact.owner = null;  // 清除物品所有者
+                    System.out.println("Because of death, you dropped the item: " + droppedItem + ".");
+                    inventoryIterator.remove();  // 使用迭代器安全删除元素
+                }
+            }
+        }
+        player.health = 3;
+        player.currentLocation = GameLoading.initialLocation;
+        System.out.println("You died and lost all of your items, you must return to the start of the game.");
     }
 
 }

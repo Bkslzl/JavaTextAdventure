@@ -33,7 +33,7 @@ public class ActionInterpreter {
         return true;
     }
 
-    private static boolean checkIfThereIsAtLeastOneSubject(GameAction theAction, ArrayList<String> entitiesList){
+    public static boolean checkIfThereIsAtLeastOneSubject(GameAction theAction, ArrayList<String> entitiesList){
         for (String item : theAction.neededEntities) {
             if (entitiesList.contains(item)) {
                 return true;
@@ -42,7 +42,7 @@ public class ActionInterpreter {
         return false;
     }
 
-    private static boolean checkIfHaveAllSubjects(Players player, GameAction theAction, ArrayList<String> entitiesList){
+    public static boolean checkIfHaveAllSubjects(Players player, GameAction theAction, ArrayList<String> entitiesList){
         //先去地图上找,和背包里
         for(String neededItem : theAction.neededEntities) {
             if (!(checkIfTheItemInTheInventory(neededItem, player) ||

@@ -1,14 +1,12 @@
 package edu.uob.Interpreter;
 
 import edu.uob.Entities.Artefacts;
+import edu.uob.Entities.Characters;
 import edu.uob.Entities.GameEntity;
 import edu.uob.Entities.Location;
 import edu.uob.GameOperations.GameAction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class CommandChecker {
     // 初始化有效命令集合
@@ -28,19 +26,19 @@ public class CommandChecker {
         for(GameEntity entity : Location.locationList){
             VALID_ENTITIES.add(entity.getName());
         }
+        for(Characters entity : Location.characterList){
+            VALID_ENTITIES.add(entity.getName());
+        }
     }
 
-    public static String checkActionValidationAndFindTheCurrentOne(String originalCommand) {
-        String foundCommand = null;
+    public static ArrayList<String> checkActionValidationAndFindTheCurrentOne(String originalCommand) {
+        ArrayList<String> actionCommands = new ArrayList<>();
         for (String command : VALID_ACTIONS) {
             if (originalCommand.toLowerCase().contains(command.toLowerCase())) {
-                if (foundCommand != null && !foundCommand.equalsIgnoreCase(command)) {
-                    return null;
-                }
-                foundCommand = command;
+                actionCommands.add(command);
             }
         }
-        return foundCommand; // 返回找到的命令，如果没有找到则为 null
+        return actionCommands; // 返回找到的命令，如果没有找到则为 null
     }
 
     public static ArrayList<String> findAllEntitiesAndStoreInTheList(String originalCommand) {

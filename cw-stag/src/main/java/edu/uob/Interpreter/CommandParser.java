@@ -2,6 +2,7 @@ package edu.uob.Interpreter;
 
 import edu.uob.GameOperations.GameAction;
 import edu.uob.Players;
+import edu.uob.Tools.GameLoading;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,19 +10,52 @@ import java.util.Iterator;
 
 public class CommandParser {
     public static void handleCommand(String originalCommand){
-        if(!handleBasicCommand(Players.playersList.get(0), originalCommand)){
-            System.out.println("Something wrong!");
+        String[] findPlayerName = originalCommand.split(":");
+        String currentPlayerName = findPlayerName[0];
+        boolean isThereCurrentPlayer = false;
+        for(Players currentPlayer : Players.playersList){
+            if(currentPlayerName.equalsIgnoreCase(currentPlayer.name)){
+                isThereCurrentPlayer = true;
+                if(!handleBasicCommand(currentPlayer, originalCommand)){
+                    System.out.println("Something wrong!");
+                }
+            }
         }
+        if(!isThereCurrentPlayer){
+            Players newPlayer = new Players(currentPlayerName, GameLoading.initialLocation);
+            Players.playersList.add(newPlayer);
+            if(!handleBasicCommand(newPlayer, originalCommand)){
+                System.out.println("Something wrong!");
+            }
+        }
+
+        /*if(!handleBasicCommand(Players.playersList.get(0), originalCommand)){
+            System.out.println("Something wrong!");
+        }*/
     }
 
     private static boolean handleBasicCommand(Players player, String originalCommand){
+
         //String[] tokens = originalCommand.split("\\s+");
-        String actionKeyWord = CommandChecker.checkActionValidationAndFindTheCurrentOne(originalCommand);
-        System.out.println(actionKeyWord);
-        if(actionKeyWord == null){
+        ArrayList<String> entitiesList = CommandChecker.findAllEntitiesAndStoreInTheList(originalCommand);
+
+        ArrayList<String> actionKeyWords = CommandChecker.checkActionValidationAndFindTheCurrentOne(originalCommand);
+        if(actionKeyWords.isEmpty()){
             return false;
         }
-        ArrayList<String> entitiesList = CommandChecker.findAllEntitiesAndStoreInTheList(originalCommand);
+
+        String actionKeyWord;
+        if(actionKeyWords.size() > 1) {
+            actionKeyWord = checkIfOnlyOneActionIsPossible(actionKeyWords, entitiesList, player);
+            if(actionKeyWord == null){
+                return false;
+            }
+        }else{
+            actionKeyWord = actionKeyWords.get(0);
+        }
+
+        System.out.println(actionKeyWord);
+
         if(actionKeyWord.equalsIgnoreCase("goto")){
             return GotoInterpreter.handleCommandGoto(player, entitiesList);
         }
@@ -58,4 +92,29 @@ public class CommandParser {
         }
     }
 
+    private static String checkIfOnlyOneActionIsPossible(ArrayList<String> actionCommands,
+                                                          ArrayList<String> entitiesList,
+                                                          Players player){
+        String currentAction = null;
+        int satisfactionNumber = 0;
+        for(String singleAction : actionCommands){
+            GameAction theAction = findTheGameAction(singleAction);
+
+            //首先判断subjects关键词对不对
+            boolean subjectsKeyWords = ActionInterpreter.checkIfThereIsAtLeastOneSubject(theAction, entitiesList);
+
+            //检查是否有这些必须道具
+            boolean subjects = ActionInterpreter.checkIfHaveAllSubjects(player, theAction, entitiesList);
+
+            if(subjectsKeyWords && subjects){
+                satisfactionNumber++;
+                currentAction = singleAction;
+            }
+        }
+        if(satisfactionNumber == 1){
+            return currentAction;
+        }
+        System.out.println("There is more than one action possible - which one do you want to perform ?");
+        return null;
+    }
 }

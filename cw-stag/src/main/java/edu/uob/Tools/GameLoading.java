@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 public class GameLoading {
+    public static String initialLocation;
+
     public static void loadGameData(File entitiesFile, File actionsFile){
         boolean entitiesLoading = GameLoading.loadEntitiesData(entitiesFile);
         boolean actionLoading = GameLoading.loadActionData(actionsFile);
@@ -183,13 +185,14 @@ public class GameLoading {
         Graph firstLocation = locations.get(0);
         Node locationDetails = firstLocation.getNodes(false).get(0);
         String locationName = locationDetails.getId().getId();
-        Players newPlayer = new Players("name", locationName);
+        initialLocation = locationName;
+        Players newPlayer = new Players("defaultPlayer", locationName);
         Players.playersList.add(newPlayer);
     }
 
     public static void main(String[] args){
-        File entitiesFile = new File("config" + File.separator + "basic-entities.dot");//basic-entities.dot, extended-entities.dot
-        File actionsFile = new File("config" + File.separator + "basic-actions.xml");//basic-actions.xml, extended-actions.xml
+        File entitiesFile = new File("config" + File.separator + "extended-entities.dot");//basic-entities.dot, extended-entities.dot
+        File actionsFile = new File("config" + File.separator + "extended-actions.xml");//basic-actions.xml, extended-actions.xml
         loadGameData(entitiesFile, actionsFile);
         System.out.println("1");
 
@@ -202,7 +205,7 @@ public class GameLoading {
                 break;
             }
             //System.out.println("Your command is: " + inputString);
-            CommandParser.handleCommand(inputString);
+            CommandParser.handleCommand("Li: " + inputString);
             System.out.println(Output.data);
             Output.data.reset();
         }
