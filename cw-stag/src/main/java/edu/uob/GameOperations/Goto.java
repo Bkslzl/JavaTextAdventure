@@ -15,6 +15,6 @@ public class Goto {
                 return;
             }
         }
-        System.out.println("Can not move because of no path.");
+        System.out.println("Can not move because of no path or you give the wrong destination.");
     }
 }

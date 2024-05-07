@@ -50,7 +50,7 @@ public class GameLoading {
             ArrayList<Graph> sections = wholeDocument.getSubgraphs();//储存所有的一级子图(一个）
             ArrayList<Graph> locations = sections.get(0).getSubgraphs();//第一个大图含有所有的地点信息
 
-            setPlayerAtHome(locations);//创建第一个角色？
+            setPlayerHome(locations);//创建第一个角色？
 
             for(Graph currentLocation : locations){
                 Node currentLocationDetails = currentLocation.getNodes(false).get(0);
@@ -181,13 +181,13 @@ public class GameLoading {
         }
     }
 
-    private static void setPlayerAtHome(ArrayList<Graph> locations){
+    private static void setPlayerHome(ArrayList<Graph> locations){
         Graph firstLocation = locations.get(0);
         Node locationDetails = firstLocation.getNodes(false).get(0);
         String locationName = locationDetails.getId().getId();
         initialLocation = locationName;
-        Players newPlayer = new Players("defaultPlayer", locationName);
-        Players.playersList.add(newPlayer);
+        /*Players newPlayer = new Players("defaultPlayer", locationName);
+        Players.playersList.add(newPlayer);*/
     }
 
     public static void main(String[] args){
@@ -205,11 +205,11 @@ public class GameLoading {
                 break;
             }
             //System.out.println("Your command is: " + inputString);
+            //CommandParser.handleCommand("Sion: " + "look");
             CommandParser.handleCommand("Li: " + inputString);
             System.out.println(Output.data);
             Output.data.reset();
         }
         scanner.close();
-
     }
 }

@@ -1,6 +1,5 @@
 package edu.uob.Interpreter;
 
-import edu.uob.Entities.Artefacts;
 import edu.uob.Entities.Characters;
 import edu.uob.Entities.GameEntity;
 import edu.uob.Entities.Location;

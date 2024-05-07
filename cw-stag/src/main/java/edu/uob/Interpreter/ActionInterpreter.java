@@ -8,6 +8,7 @@ import edu.uob.GameOperations.GameAction;
 import edu.uob.Players;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ActionInterpreter {
     public static boolean handleCommandActions(GameAction theAction, Players player, ArrayList<String> entitiesList){
@@ -25,6 +26,12 @@ public class ActionInterpreter {
         //检查是否有这些必须道具
         if(!checkIfHaveAllSubjects(player, theAction, entitiesList)){
             System.out.println("You do not have enough items.");
+            return false;
+        }
+
+        //检查是否有冗余subject
+        if(ifCommandHasExtraEntities(entitiesList, theAction)){
+            System.out.println("You gave too many entities.");
             return false;
         }
 
@@ -84,5 +91,18 @@ public class ActionInterpreter {
             }
         }
         return false;
+    }
+
+    private static boolean ifCommandHasExtraEntities(ArrayList<String> entitiesList, GameAction theAction){
+        // 将 neededEntities 转换为 HashSet 以提高查找效率
+        HashSet<String> neededSet = new HashSet<>(theAction.neededEntities);
+
+        // 检查 entitiesList 中的每个元素是否都在 neededSet 中
+        for (String entity : entitiesList) {
+            if (!neededSet.contains(entity)) {
+                return true;  // 发现冗余元素
+            }
+        }
+        return false;  // 所有元素都是必需的
     }
 }

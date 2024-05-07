@@ -7,6 +7,7 @@ import edu.uob.Tools.GameLoading;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 public class CommandParser {
     public static void handleCommand(String originalCommand){
@@ -41,6 +42,7 @@ public class CommandParser {
 
         ArrayList<String> actionKeyWords = CommandChecker.checkActionValidationAndFindTheCurrentOne(originalCommand);
         if(actionKeyWords.isEmpty()){
+            System.out.println("Can not find any actions.");
             return false;
         }
 
@@ -48,6 +50,7 @@ public class CommandParser {
         if(actionKeyWords.size() > 1) {
             actionKeyWord = checkIfOnlyOneActionIsPossible(actionKeyWords, entitiesList, player);
             if(actionKeyWord == null){
+                System.out.println("Can not find any available actions.");
                 return false;
             }
         }else{
@@ -95,9 +98,26 @@ public class CommandParser {
     private static String checkIfOnlyOneActionIsPossible(ArrayList<String> actionCommands,
                                                           ArrayList<String> entitiesList,
                                                           Players player){
+        ArrayList<String> validActions = new ArrayList<>();
         String currentAction = null;
-        int satisfactionNumber = 0;
+
         for(String singleAction : actionCommands){
+            boolean continueProcessing = true;
+
+            //先判读有没有基础型符合需求
+            String action = singleAction.toLowerCase();
+            switch (action) {
+                case "inventory", "inv", "look", "get", "drop", "goto":
+                    validActions.add(singleAction);
+                    currentAction = singleAction;
+                    continueProcessing = false;
+                    break;
+            }
+
+            if (!continueProcessing) {
+                continue; // 跳到for循环的下一次迭代
+            }
+
             GameAction theAction = findTheGameAction(singleAction);
 
             //首先判断subjects关键词对不对
@@ -107,14 +127,38 @@ public class CommandParser {
             boolean subjects = ActionInterpreter.checkIfHaveAllSubjects(player, theAction, entitiesList);
 
             if(subjectsKeyWords && subjects){
-                satisfactionNumber++;
+                validActions.add(singleAction);
                 currentAction = singleAction;
             }
         }
-        if(satisfactionNumber == 1){
+        int validActionsNumber = countUniqueGameActionsNumber(validActions);
+        if(validActionsNumber <= 1){
             return currentAction;
         }
         System.out.println("There is more than one action possible - which one do you want to perform ?");
         return null;
+    }
+
+    public static int countUniqueGameActionsNumber(ArrayList<String> actionCommands) {
+        Set<GameAction> uniqueActions = new HashSet<>();
+        int basicActionsNumber = 0;
+        for (String singleAction : actionCommands) {
+            String action = singleAction.toLowerCase();
+            if (singleAction.equalsIgnoreCase("inventory") ||
+                    singleAction.equalsIgnoreCase("inv") ||
+                    singleAction.equalsIgnoreCase("look") ||
+                    singleAction.equalsIgnoreCase("get") ||
+                    singleAction.equalsIgnoreCase("drop") ||
+                    singleAction.equalsIgnoreCase("goto")) {
+                basicActionsNumber++;
+                continue;
+            }
+            Iterator<GameAction> it = GameAction.hashActions.get(action).iterator();
+            GameAction theAction = it.next();
+            if (theAction != null) {
+                uniqueActions.add(theAction);
+            }
+        }
+        return uniqueActions.size() + basicActionsNumber; // 返回不同GameAction对象的数量
     }
 }

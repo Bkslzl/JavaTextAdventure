@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class GameAction {
     public static HashMap<String,HashSet<GameAction>> hashActions = new HashMap<String, HashSet<GameAction>>();
@@ -76,6 +77,10 @@ public class GameAction {
         for (Location theLocation : Location.locationList) {
             if (theLocation.getName().equalsIgnoreCase(item)) {
                 //删除当前位置和消耗位置之间的路径（在其他游戏位置中可能还有通往该位置的其他路径)
+                if(theLocation.getName().equalsIgnoreCase(player.currentLocation)){
+                    System.out.println("Cannot delete current location.");
+                    return;
+                }
                 removePath(player.currentLocation, item);
                 System.out.println("The path to " + item + " has been removed.");
                 return;
@@ -165,4 +170,17 @@ public class GameAction {
         System.out.println("You died and lost all of your items, you must return to the start of the game.");
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameAction that = (GameAction) o;
+        return Objects.equals(narration, that.narration) &&
+                Objects.equals(consumedEntities, that.consumedEntities) &&
+                Objects.equals(neededEntities, that.neededEntities) &&
+                Objects.equals(producedEntities, that.producedEntities);
+    }
+
+    public int hashCode() {
+        return Objects.hash(narration, consumedEntities, neededEntities, producedEntities);
+    }
 }

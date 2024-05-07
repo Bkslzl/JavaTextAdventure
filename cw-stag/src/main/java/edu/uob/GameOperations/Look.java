@@ -30,7 +30,12 @@ public class Look {
                 System.out.println("Name: " + furniture.getName() + "  Description: " + furniture.getDescription());
             }
         }
-
+        for(Players otherPlayer : Players.playersList){
+            if((!otherPlayer.name.equalsIgnoreCase(player.name)) &&
+                    otherPlayer.currentLocation.equalsIgnoreCase(player.currentLocation)){
+                System.out.println("Other player: " + otherPlayer.name);
+            }
+        }
         System.out.println("Here is the path:");
         int i =0;
         for(String map : Location.theMap) {
