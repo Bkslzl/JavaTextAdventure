@@ -24,5 +24,18 @@ public class Look {
                 System.out.println("Name: " + furniture.getName() + "  Description: " + furniture.getDescription());
             }
         }
+
+        System.out.println("Here is the path:");
+        int i =0;
+        for(String map : Location.theMap) {
+            String[] twoLocations = map.split("\\s+");
+            if(twoLocations[0].equalsIgnoreCase(player.currentLocation)){
+                System.out.println("There is a way to: " + twoLocations[1]);
+                i++;
+            }
+        }
+        if(i == 0){
+            System.out.println("There is no path.");
+        }
     }
 }

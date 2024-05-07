@@ -4,7 +4,6 @@ import edu.uob.Entities.Characters;
 import edu.uob.Entities.Furniture;
 import edu.uob.Entities.Location;
 import edu.uob.GameOperations.Drop;
-import edu.uob.GameOperations.Get;
 import edu.uob.Players;
 
 import java.util.ArrayList;

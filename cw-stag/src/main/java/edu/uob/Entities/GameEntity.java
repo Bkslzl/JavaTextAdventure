@@ -26,7 +26,7 @@ public abstract class GameEntity
     }
     public String getLocation()
     {
-        return description;
+        return location;
     }
 
     public void changeLocation(String newLocation){

@@ -10,6 +10,8 @@ import edu.uob.Entities.Characters;
 import edu.uob.Entities.Furniture;
 import edu.uob.Entities.Location;
 import edu.uob.GameOperations.GameAction;
+import edu.uob.Interpreter.CommandParser;
+import edu.uob.Players;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -24,6 +26,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Scanner;
 
 public class GameLoading {
     public static void loadGameData(File entitiesFile, File actionsFile){
@@ -35,18 +38,21 @@ public class GameLoading {
     private static boolean loadEntitiesData(File entitiesFile){
         try {
             Parser parser = new Parser();
-            FileReader reader = new FileReader("config" + File.separator + "extended-entities.dot");
-            //FileReader reader = new FileReader(entitiesFile);
+            //FileReader reader = new FileReader("config" + File.separator + "extended-entities.dot");
+            FileReader reader = new FileReader(entitiesFile);
             parser.parse(reader);
 
             Graph wholeDocument = parser.getGraphs().get(0);//找到第一个大图
             ArrayList<Graph> sections = wholeDocument.getSubgraphs();//储存所有的一级子图(一个）
             ArrayList<Graph> locations = sections.get(0).getSubgraphs();//第一个大图含有所有的地点信息
+
+            setPlayerAtHome(locations);//创建第一个角色？
+
             for(Graph currentLocation : locations){
                 Node currentLocationDetails = currentLocation.getNodes(false).get(0);
                 String currentLocationName = currentLocationDetails.getId().getId();
                 String currentLocationDescription = currentLocationDetails.getAttribute("description");
-                Location newLocation = new Location(currentLocationName,currentLocationDescription);
+                Location newLocation = new Location(currentLocationName,currentLocationDescription, currentLocationName);
                 Location.locationList.add(newLocation);//储存所有的地点信息（名字描述）
                 //System.out.println(currentLocationName+ "       "+currentLocationDescription);
 
@@ -107,8 +113,8 @@ public class GameLoading {
     private static boolean loadActionData(File actionsFile){
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse("config" + File.separator + "extended-actions.xml");
-            //Document document = builder.parse(actionsFile);
+            //Document document = builder.parse("config" + File.separator + "extended-actions.xml");
+            Document document = builder.parse(actionsFile);
             Element root = document.getDocumentElement();
             NodeList actions = root.getChildNodes();
 
@@ -170,6 +176,34 @@ public class GameLoading {
         }
     }
 
+    private static void setPlayerAtHome(ArrayList<Graph> locations){
+        Graph firstLocation = locations.get(0);
+        Node locationDetails = firstLocation.getNodes(false).get(0);
+        String locationName = locationDetails.getId().getId();
+        Players newPlayer = new Players("name", locationName);
+        Players.playersList.add(newPlayer);
+    }
+
     public static void main(String[] args){
+        File entitiesFile = new File("config" + File.separator + "extended-entities.dot");
+        File actionsFile = new File("config" + File.separator + "extended-actions.xml");
+        loadGameData(entitiesFile, actionsFile);
+        System.out.println("1");
+
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.setOut(Output.originalOut);
+            System.out.print("Please enter command：");
+            String inputString = scanner.nextLine();
+            if (inputString.equals("stop")) {
+                break;
+            }
+            //System.out.println("Your command is: " + inputString);
+            CommandParser.handleCommand(inputString);
+            System.out.println(Output.data);
+            Output.data.reset();
+        }
+        scanner.close();
+
     }
 }

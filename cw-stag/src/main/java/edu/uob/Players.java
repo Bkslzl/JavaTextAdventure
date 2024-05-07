@@ -3,6 +3,7 @@ package edu.uob;
 import java.util.ArrayList;
 
 public class Players {
+    public static ArrayList<Players> playersList = new ArrayList<>();
     public String name;
     public String currentLocation;
     public ArrayList<String> inventory = new ArrayList<>();

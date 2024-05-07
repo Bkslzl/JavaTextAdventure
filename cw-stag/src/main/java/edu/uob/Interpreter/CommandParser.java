@@ -1,17 +1,17 @@
 package edu.uob.Interpreter;
 
-import edu.uob.GameOperations.Drop;
-import edu.uob.GameOperations.Get;
 import edu.uob.Players;
 
 import java.util.ArrayList;
 
 public class CommandParser {
     public static void handleCommand(String originalCommand){
-
+        if(!handleBasicCommand(Players.playersList.get(0), originalCommand)){
+            System.out.println("Something wrong!");
+        }
     }
 
-    private boolean handleBasicCommand(Players player, String originalCommand){
+    private static boolean handleBasicCommand(Players player, String originalCommand){
         //String[] tokens = originalCommand.split("\\s+");
         String actionKeyWord = CommandChecker.checkActionValidationAndFindTheCurrentOne(originalCommand);
         if(actionKeyWord == null){

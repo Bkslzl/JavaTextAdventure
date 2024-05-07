@@ -9,7 +9,7 @@ public class Location extends GameEntity {
     public static ArrayList<Artefacts> artefactsList = new ArrayList<>();
     public static ArrayList<Characters> characterList = new ArrayList<>();
     public static ArrayList<Furniture> furnitureList = new ArrayList<>();
-    public Location(String name, String description){
-        super(name, description, null);
+    public Location(String name, String description, String location){
+        super(name, description, location);
     }
 }

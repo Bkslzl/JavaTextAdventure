@@ -2,7 +2,6 @@ package edu.uob.GameOperations;
 
 import edu.uob.Entities.Artefacts;
 import edu.uob.Entities.Location;
-import edu.uob.Entities.NewEntities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,12 +35,6 @@ public class GameAction {
                     iterator.remove();
                 }
             }
-        }
-
-        //produce
-        for(String currentItem : producedEntities) {
-            NewEntities newItem = new NewEntities(currentItem, "");
-            NewEntities.newEntitiesList.add(newItem);
         }
 
         //needed还不知道
