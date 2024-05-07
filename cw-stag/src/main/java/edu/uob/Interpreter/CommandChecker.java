@@ -6,6 +6,8 @@ import edu.uob.Entities.Location;
 import edu.uob.GameOperations.GameAction;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandChecker {
     // 初始化有效命令集合
@@ -33,7 +35,15 @@ public class CommandChecker {
     public static ArrayList<String> checkActionValidationAndFindTheCurrentOne(String originalCommand) {
         ArrayList<String> actionCommands = new ArrayList<>();
         for (String command : VALID_ACTIONS) {
-            if (originalCommand.toLowerCase().contains(command.toLowerCase())) {
+            /*if (originalCommand.toLowerCase().contains(command.toLowerCase())) {
+                actionCommands.add(command);
+            }*/
+
+            // 构建正则表达式，使用\b来标记单词的边界
+            Pattern pattern = Pattern.compile("\\b" + Pattern.quote(command) + "\\b", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(originalCommand);
+
+            if (matcher.find()) {
                 actionCommands.add(command);
             }
         }
