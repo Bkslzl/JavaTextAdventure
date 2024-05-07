@@ -18,7 +18,7 @@ public class CommandParser {
             if(currentPlayerName.equalsIgnoreCase(currentPlayer.name)){
                 isThereCurrentPlayer = true;
                 if(!handleBasicCommand(currentPlayer, originalCommand)){
-                    System.out.println("Something wrong!");
+                    System.out.println("Grammar wrong!");
                 }
             }
         }
@@ -26,7 +26,7 @@ public class CommandParser {
             Players newPlayer = new Players(currentPlayerName, GameLoading.initialLocation);
             Players.playersList.add(newPlayer);
             if(!handleBasicCommand(newPlayer, originalCommand)){
-                System.out.println("Something wrong!");
+                System.out.println("Grammar error!");
             }
         }
 
