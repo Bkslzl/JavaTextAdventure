@@ -188,8 +188,8 @@ public class GameLoading {
     }
 
     public static void main(String[] args){
-        File entitiesFile = new File("config" + File.separator + "extended-entities.dot");
-        File actionsFile = new File("config" + File.separator + "extended-actions.xml");
+        File entitiesFile = new File("config" + File.separator + "basic-entities.dot");//basic-entities.dot, extended-entities.dot
+        File actionsFile = new File("config" + File.separator + "basic-actions.xml");//basic-actions.xml, extended-actions.xml
         loadGameData(entitiesFile, actionsFile);
         System.out.println("1");
 
