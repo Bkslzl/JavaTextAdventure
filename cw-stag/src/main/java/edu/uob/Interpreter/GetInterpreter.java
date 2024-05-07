@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class GetInterpreter {
     public static boolean handleCommandGet(Players player, ArrayList<String> entitiesList){
         if(entitiesList.size() != 1){
-            System.out.println("Can not get more than one items at a time.");
+            System.out.println("Can not get more than one item at a time.");
             return false;
         }
         for(Characters character : Location.characterList){

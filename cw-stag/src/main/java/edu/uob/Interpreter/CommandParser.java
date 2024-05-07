@@ -36,11 +36,12 @@ public class CommandParser {
     }
 
     private static boolean handleBasicCommand(Players player, String originalCommand){
+        String originalLowerCaseCommand = originalCommand.toLowerCase();
 
         //String[] tokens = originalCommand.split("\\s+");
-        ArrayList<String> entitiesList = CommandChecker.findAllEntitiesAndStoreInTheList(originalCommand);
+        ArrayList<String> entitiesList = CommandChecker.findAllEntitiesAndStoreInTheList(originalLowerCaseCommand);
 
-        ArrayList<String> actionKeyWords = CommandChecker.checkActionValidationAndFindTheCurrentOne(originalCommand);
+        ArrayList<String> actionKeyWords = CommandChecker.checkActionValidationAndFindTheCurrentOne(originalLowerCaseCommand);
         if(actionKeyWords.isEmpty()){
             System.out.println("Can not find any actions.");
             return false;
