@@ -50,7 +50,7 @@ public final class GameServer {
 
         CommandParser.handleCommand(command);
 
-        return Output.data.toString();
+        return ""/* + Output.data.toString()*/;
     }
 
     /**

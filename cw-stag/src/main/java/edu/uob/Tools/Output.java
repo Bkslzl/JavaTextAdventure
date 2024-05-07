@@ -12,4 +12,8 @@ public class Output {
     public static void changeOutputStream(){
         System.setOut(Output.captureStream);
     }
+
+    public static void restoreOutputStream() {
+        System.setOut(Output.originalOut);
+    }
 }
