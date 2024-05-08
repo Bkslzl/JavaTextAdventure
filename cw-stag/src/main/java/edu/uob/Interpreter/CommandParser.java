@@ -1,5 +1,7 @@
 package edu.uob.Interpreter;
 
+import edu.uob.Entities.Artefacts;
+import edu.uob.Entities.Location;
 import edu.uob.GameOperations.GameAction;
 import edu.uob.Players;
 import edu.uob.Tools.GameLoading;
@@ -103,20 +105,14 @@ public class CommandParser {
         String currentAction = null;
 
         for(String singleAction : actionCommands){
-            boolean continueProcessing = true;
 
             //先判读有没有基础型符合需求
-            String action = singleAction.toLowerCase();
-            switch (action) {
-                case "inventory", "inv", "look", "get", "drop", "goto":
-                    validActions.add(singleAction);
+            int originalSize = validActions.size();
+            if(checkIfOneBasicActionsValid(singleAction, validActions, player,entitiesList)){
+                if(originalSize != validActions.size()) {
                     currentAction = singleAction;
-                    continueProcessing = false;
-                    break;
-            }
-
-            if (!continueProcessing) {
-                continue; // 跳到for循环的下一次迭代
+                }
+                continue;
             }
 
             GameAction theAction = findTheGameAction(singleAction);
@@ -133,7 +129,7 @@ public class CommandParser {
             }
         }
         int validActionsNumber = countUniqueGameActionsNumber(validActions);
-        if(validActionsNumber <= 1){
+        if(validActionsNumber == 1){
             return currentAction;
         }
         System.out.println("There is more than one action possible - which one do you want to perform ?");
@@ -161,5 +157,89 @@ public class CommandParser {
             }
         }
         return uniqueActions.size() + basicActionsNumber; // 返回不同GameAction对象的数量
+    }
+
+    private static boolean checkIfOneBasicActionsValid(String singleAction,
+                                                       ArrayList<String> validActions,
+                                                       Players player,
+                                                       ArrayList<String> entitiesList){
+        boolean control = false;
+        switch (singleAction) {
+            case "inventory", "inv", "look":
+                validActions.add(singleAction);
+                control = true;
+                break;
+            case "get":
+                if(checkIfEntitiesSatisfyGet(player, entitiesList)){
+                    validActions.add(singleAction);
+                }
+                control = true;
+                break;
+
+            case "drop":
+                if(checkIfEntitiesSatisfyDrop(player, entitiesList)){
+                    validActions.add(singleAction);
+                }
+                control = true;
+                break;
+
+            case "goto":
+                if(checkIfEntitiesSatisfyGoto(player, entitiesList)){
+                    validActions.add(singleAction);
+                }
+                control = true;
+                break;
+        }
+        return control;
+    }
+
+    private static boolean checkIfEntitiesSatisfyGet(Players player, ArrayList<String> entitiesList){
+        int entitiesNumber = 0;
+        for(String currentEntity : entitiesList){
+            for(Artefacts artefact : Location.artefactsList){
+                if(currentEntity.equalsIgnoreCase(artefact.getName()) &&
+                player.currentLocation.equalsIgnoreCase(artefact.getLocation())){
+                    entitiesNumber++;
+                }
+            }
+        }
+        return entitiesNumber == 1;
+    }
+
+    private static boolean checkIfEntitiesSatisfyDrop(Players player, ArrayList<String> entitiesList){
+        int entitiesNumber = 0;
+        for(String invItem : player.inventory){//满足在背包
+            for(String entity : entitiesList) {//被关键词提到
+                if (invItem.equalsIgnoreCase(entity)){
+                    entitiesNumber++;
+                }
+            }
+        }
+        return entitiesNumber == 1;
+    }
+
+    private static boolean checkIfEntitiesSatisfyGoto(Players player, ArrayList<String> entitiesList){
+        int entitiesNumber = 0;
+        for(String currentEntity : entitiesList){//要在关键词
+            for(Location location : Location.locationList){//要是地点
+                if(currentEntity.equalsIgnoreCase(location.getName()) &&//要有路
+                        checkIfThereIsAPath(player, currentEntity)){
+                    entitiesNumber++;
+                }
+            }
+        }
+        return entitiesNumber == 1;
+    }
+
+    private static boolean checkIfThereIsAPath(Players player, String destination){
+        for(String map : Location.theMap){
+            String[] twoLocations =map.split("\\s+");
+            String start = twoLocations[0];
+            String end = twoLocations[1];
+            if(end.equalsIgnoreCase(destination) && start.equalsIgnoreCase(player.currentLocation)){
+                return true;//确实有路
+            }
+        }
+        return false;
     }
 }

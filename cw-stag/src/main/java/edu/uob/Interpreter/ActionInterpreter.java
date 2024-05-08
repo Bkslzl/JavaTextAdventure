@@ -35,9 +35,37 @@ public class ActionInterpreter {
             return false;
         }
 
+        //检查生成的道具是否在别人背包里
+        if(checkIfOtherPlayerHasTheProducedItem(theAction, player)){
+            System.out.println("Other player has the produced item, so you cannot do that.");
+            return false;
+        }
+
         //可以执行了
         theAction.action(player);
         return true;
+    }
+
+    public static boolean checkIfOtherPlayerHasTheProducedItem(GameAction theAction, Players player){
+        for(String producedItem : theAction.producedEntities){
+            if(checkIfOtherPlayersHaveTheItem(player, producedItem)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean checkIfOtherPlayersHaveTheItem(Players player, String item){
+        for(Players currentPlayer : Players.playersList){
+            if(!currentPlayer.name.equalsIgnoreCase(player.name)){
+                for(String invItem : currentPlayer.inventory){
+                    if(invItem.equalsIgnoreCase(item)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public static boolean checkIfThereIsAtLeastOneSubject(GameAction theAction, ArrayList<String> entitiesList){

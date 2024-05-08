@@ -11,10 +11,33 @@ import java.util.regex.Pattern;
 
 public class CommandChecker {
     // 初始化有效命令集合
-    private static final Set<String> VALID_ACTIONS = new HashSet<>(Set.of("inventory", "inv", "get", "drop", "goto", "look"));
-    private static final Set<String> VALID_ENTITIES = new HashSet<>();
+    public static Set<String> VALID_ACTIONS = new HashSet<>(/*Set.of("inventory", "inv", "get", "drop", "goto", "look")*/);
+    public static Set<String> VALID_ENTITIES = new HashSet<>();
 
-    static {
+    /*static {
+        // 从已存在的hashActions获取所有命令
+        VALID_ACTIONS.addAll(GameAction.hashActions.keySet());
+
+        for(GameEntity entity : Location.artefactsList){
+            VALID_ENTITIES.add(entity.getName());
+        }
+        for(GameEntity entity : Location.furnitureList){
+            VALID_ENTITIES.add(entity.getName());
+        }
+        for(GameEntity entity : Location.locationList){
+            VALID_ENTITIES.add(entity.getName());
+        }
+        for(Characters entity : Location.characterList){
+            VALID_ENTITIES.add(entity.getName());
+        }
+    }*/
+
+    // 初始化方法
+    public static void initializeGameData() {
+        // 初始化 VALID_ACTIONS
+        VALID_ACTIONS.addAll(Set.of("inventory", "inv", "get", "drop", "goto", "look"));
+        VALID_ACTIONS.addAll(GameAction.hashActions.keySet());
+
         // 从已存在的hashActions获取所有命令
         VALID_ACTIONS.addAll(GameAction.hashActions.keySet());
 
@@ -61,16 +84,5 @@ public class CommandChecker {
             }
         }
         return entitiesInTheCommand;
-    }
-
-    public static void main(String[] args) {
-        String input1 = "I want to get up item";
-        System.out.println("Command found: " + checkActionValidationAndFindTheCurrentOne(input1));
-
-        String input2 = "pick up item and use key";
-        System.out.println("Command found: " + checkActionValidationAndFindTheCurrentOne(input2));
-
-        String input3 = "just walking around";
-        System.out.println("Command found: " + checkActionValidationAndFindTheCurrentOne(input3));
     }
 }

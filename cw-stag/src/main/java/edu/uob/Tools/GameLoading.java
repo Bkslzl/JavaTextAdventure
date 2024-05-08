@@ -10,6 +10,7 @@ import edu.uob.Entities.Characters;
 import edu.uob.Entities.Furniture;
 import edu.uob.Entities.Location;
 import edu.uob.GameOperations.GameAction;
+import edu.uob.Interpreter.CommandChecker;
 import edu.uob.Interpreter.CommandParser;
 import edu.uob.Players;
 import org.w3c.dom.Document;
@@ -32,8 +33,12 @@ public class GameLoading {
     public static String initialLocation;
 
     public static void loadGameData(File entitiesFile, File actionsFile){
+        resetTheGameData();
+
         boolean entitiesLoading = GameLoading.loadEntitiesData(entitiesFile);
         boolean actionLoading = GameLoading.loadActionData(actionsFile);
+        CommandChecker.initializeGameData();
+
         if(! (entitiesLoading || actionLoading)){
             System.out.println("loading data error");
         }
@@ -190,11 +195,32 @@ public class GameLoading {
         Players.playersList.add(newPlayer);*/
     }
 
+    public static void resetTheGameData(){
+        GameAction.hashActions.clear();
+
+        Location.locationList.clear();
+        Location.theMap.clear();
+        Location.artefactsList.clear();
+        Location.characterList.clear();
+        Location.furnitureList.clear();
+
+        Players.playersList.clear();
+
+        CommandChecker.VALID_ACTIONS.clear();
+        CommandChecker.VALID_ENTITIES.clear();
+    }
+
     public static void main(String[] args){
         File entitiesFile = new File("config" + File.separator + "extended-entities.dot");//basic-entities.dot, extended-entities.dot
         File actionsFile = new File("config" + File.separator + "extended-actions.xml");//basic-actions.xml, extended-actions.xml
         loadGameData(entitiesFile, actionsFile);
         System.out.println("1");
+
+        /*CommandParser.handleCommand("Sion: " + "goto forest");
+        CommandParser.handleCommand("Sion: " + "get key");
+        CommandParser.handleCommand("Sion: " + "goto cabin");
+        CommandParser.handleCommand("Sion: " + "open key");
+        CommandParser.handleCommand("Li: " + "get key");*/
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -205,7 +231,6 @@ public class GameLoading {
                 break;
             }
             //System.out.println("Your command is: " + inputString);
-            //CommandParser.handleCommand("Sion: " + "look");
             CommandParser.handleCommand("Li: " + inputString);
             System.out.println(Output.data);
             Output.data.reset();
