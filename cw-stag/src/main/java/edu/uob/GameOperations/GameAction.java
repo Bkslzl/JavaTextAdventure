@@ -56,6 +56,7 @@ public class GameAction {
         for (Artefacts artefact : Location.artefactsList) {
             if (artefact.getName().equalsIgnoreCase(item)) {
                 artefact.changeLocation("storeroom");
+                artefact.owner = null;
                 System.out.println("Consume Item: " + item + ".");
                 return;
             }
@@ -93,7 +94,7 @@ public class GameAction {
         while (iterator.hasNext()) {
             String inventoryItem = iterator.next();
             if (inventoryItem.equalsIgnoreCase(item)) {
-                iterator.remove();  // 使用迭代器的 remove 方法删除元素
+                iterator.remove();
                 return;
             }
         }
@@ -117,7 +118,7 @@ public class GameAction {
             if(player.health < 3){
                 player.health++;
             }
-            System.out.println("You get a health.");
+            System.out.println("You gain health.");
             return;
         }
 
@@ -146,7 +147,7 @@ public class GameAction {
             if (theLocation.getName().equalsIgnoreCase(item)) {
                 //删除当前位置和消耗位置之间的路径（在其他游戏位置中可能还有通往该位置的其他路径)
                 Location.theMap.add(player.currentLocation + " " + item);
-                System.out.println("The path to " + item + " has occurred.");
+                System.out.println("The path from " + player.currentLocation + "to " + item + " has occurred.");
                 return;
             }
         }
@@ -160,7 +161,7 @@ public class GameAction {
                 if (artefact.getName().equalsIgnoreCase(droppedItem)) {
                     artefact.changeLocation(player.currentLocation);  // 更改物品位置
                     artefact.owner = null;  // 清除物品所有者
-                    System.out.println("Because of death, you dropped the item: " + droppedItem + ".");
+                    System.out.println("Because of death, you drop the item: " + droppedItem + ".");
                     inventoryIterator.remove();  // 使用迭代器安全删除元素
                 }
             }

@@ -1,7 +1,9 @@
 package edu.uob.GameOperations;
 
+import edu.uob.Entities.GameEntity;
 import edu.uob.Entities.Location;
 import edu.uob.Players;
+import edu.uob.Tools.Findings;
 
 public class Goto {
     public static void gotoTheLocation(Players player, String destination){
@@ -11,7 +13,13 @@ public class Goto {
             String end = twoLocations[1];
             if(end.equalsIgnoreCase(destination) && start.equalsIgnoreCase(player.currentLocation)){
                 player.currentLocation = destination;
-                System.out.println("Successfully moved to the destination.");
+                System.out.println("Go from " + start +" to " + destination);
+
+                GameEntity newEntity = Findings.accordingToNameFindItem(destination);
+                if(newEntity != null){
+                    System.out.println("The description is: " + newEntity.getDescription());
+                }
+
                 return;
             }
         }

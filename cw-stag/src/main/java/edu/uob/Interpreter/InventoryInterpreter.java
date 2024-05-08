@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class InventoryInterpreter {
     public static boolean handleCommandInventory(Players player, ArrayList<String> entitiesList){
         if(!entitiesList.isEmpty()){
-            System.out.println("Can not understand the purpose of giving entity.");
+            System.out.println("Can not understand the purpose of the giving entities.");
             return false;
         }
         Inventory.printThePlayerInventory(player);

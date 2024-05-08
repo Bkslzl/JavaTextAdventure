@@ -31,7 +31,7 @@ public class ActionInterpreter {
 
         //检查是否有冗余subject
         if(ifCommandHasExtraEntities(entitiesList, theAction)){
-            System.out.println("You gave too many entities.");
+            System.out.println("You give too many entities.");
             return false;
         }
 
@@ -46,7 +46,7 @@ public class ActionInterpreter {
         return true;
     }
 
-    public static boolean checkIfOtherPlayerHasTheProducedItem(GameAction theAction, Players player){
+    private static boolean checkIfOtherPlayerHasTheProducedItem(GameAction theAction, Players player){
         for(String producedItem : theAction.producedEntities){
             if(checkIfOtherPlayersHaveTheItem(player, producedItem)){
                 return true;

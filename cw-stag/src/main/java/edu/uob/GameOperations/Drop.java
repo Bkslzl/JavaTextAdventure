@@ -1,20 +1,15 @@
 package edu.uob.GameOperations;
 
 import edu.uob.Entities.Artefacts;
+import edu.uob.Entities.GameEntity;
 import edu.uob.Entities.Location;
 import edu.uob.Players;
+import edu.uob.Tools.Findings;
 
 import java.util.Iterator;
 
 public class Drop {
     public static void dropTheSpecificItem(Players player, String itemName){
-        /*for(String findItem : player.inventory){
-            if(findItem.equalsIgnoreCase(itemName)){
-                dropTheItemInCurrentLocation(player,itemName);
-                System.out.println("Successfully dropped the item: " + itemName);
-                return;
-            }
-        }*/
         Iterator<String> iterator = player.inventory.iterator();
         while (iterator.hasNext()) {
             String findItem = iterator.next();
@@ -22,6 +17,12 @@ public class Drop {
                 dropTheItemInCurrentLocation(player, itemName);
                 iterator.remove();
                 System.out.println("Successfully dropped the item: " + itemName);
+
+                GameEntity newEntity = Findings.accordingToNameFindItem(itemName);
+                if(newEntity != null){
+                    System.out.println("The description is: " + newEntity.getDescription());
+                }
+
                 return;
             }
         }

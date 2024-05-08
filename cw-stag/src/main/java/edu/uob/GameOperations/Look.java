@@ -8,7 +8,7 @@ import edu.uob.Players;
 
 public class Look {
     public static void printAllThingsInCurrentLocation(Players player){
-        System.out.println("All entities are shown below:");
+        //System.out.println("All entities are shown below:");
         for(Location location : Location.locationList){
             if(location.getName().equalsIgnoreCase(player.currentLocation)){
                 System.out.println("You are in location: " + location.getName() + "  Description: " + location.getDescription());
@@ -36,7 +36,7 @@ public class Look {
                 System.out.println("Other player: " + otherPlayer.name);
             }
         }
-        System.out.println("Here is the path:");
+        System.out.println("Here are the paths:");
         int i =0;
         for(String map : Location.theMap) {
             String[] twoLocations = map.split("\\s+");

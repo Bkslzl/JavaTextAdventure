@@ -85,6 +85,7 @@ public class GameLoading {
             }
 
         } catch (FileNotFoundException | ParseException fife) {
+            System.out.println("Can not find the file.");
             return false;
         }
         return true;
