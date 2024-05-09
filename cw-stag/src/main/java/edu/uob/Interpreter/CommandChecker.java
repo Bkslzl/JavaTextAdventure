@@ -19,7 +19,7 @@ public class CommandChecker {
     // 初始化方法
     public static void initializeGameData() {
         // 初始化 VALID_ACTIONS
-        VALID_ACTIONS.addAll(Set.of("inventory", "inv", "get", "drop", "goto", "look"));
+        VALID_ACTIONS.addAll(Set.of("inventory", "inv", "get", "drop", "goto", "look", "health"));
         VALID_ACTIONS.addAll(GameAction.hashActions.keySet());
 
         // 从已存在的hashActions获取所有命令
@@ -43,7 +43,7 @@ public class CommandChecker {
         ArrayList<String> actionCommands = new ArrayList<>();
         for (String command : VALID_ACTIONS) {
             // 构建正则表达式，使用\b来标记单词的边界
-            Pattern pattern = Pattern.compile("\\b" + Pattern.quote(command) + "\\b", Pattern.CASE_INSENSITIVE);
+            Pattern pattern = Pattern.compile("(?<!\\S)" + Pattern.quote(command) + "(?!\\S)", Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(originalCommand);
 
             if (matcher.find()) {
@@ -125,6 +125,7 @@ public class CommandChecker {
                     singleAction.equalsIgnoreCase("look") ||
                     singleAction.equalsIgnoreCase("get") ||
                     singleAction.equalsIgnoreCase("drop") ||
+                    singleAction.equalsIgnoreCase("health") ||
                     singleAction.equalsIgnoreCase("goto")) {
                 basicActionsNumber++;
                 continue;
@@ -144,7 +145,7 @@ public class CommandChecker {
                                                        ArrayList<String> entitiesList){
         boolean control = false;
         switch (singleAction) {
-            case "inventory", "inv", "look":
+            case "inventory", "inv", "look", "health":
                 validActions.add(singleAction);
                 control = true;
                 break;

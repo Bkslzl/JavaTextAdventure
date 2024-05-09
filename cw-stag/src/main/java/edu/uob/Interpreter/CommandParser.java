@@ -1,6 +1,7 @@
 package edu.uob.Interpreter;
 
 import edu.uob.GameOperations.GameAction;
+import edu.uob.GameOperations.Health;
 import edu.uob.Players;
 import edu.uob.Tools.GameLoading;
 
@@ -76,6 +77,9 @@ public class CommandParser {
         }
         else if(actionKeyWord.equalsIgnoreCase("look")){
             return LookInterpreter.handleCommandLook(player, entitiesList);
+        }
+        else if(actionKeyWord.equalsIgnoreCase("health")){
+            return HealthInterpreter.handleCommandHealth(player, entitiesList);
         }
 
         else if(CommandChecker.findTheGameAction(actionKeyWord) != null){
