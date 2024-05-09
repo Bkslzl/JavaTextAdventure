@@ -31,7 +31,7 @@ public class GameAction {
     }
 
     public void action(Players player){
-        //两步，1消耗，2产生
+        //Two steps, 1 consumption, 2 production
         for (String consumedItem : consumedEntities) {
             findTheItemAndConsumeIt(consumedItem, player);
         }
@@ -57,27 +57,28 @@ public class GameAction {
             if (artefact.getName().equalsIgnoreCase(item)) {
                 artefact.changeLocation("storeroom");
                 artefact.owner = null;
-                System.out.println("Consume Item: " + item + ".");
+                System.out.println("Consume artefact: " + item + ".");
                 return;
             }
         }
         for (Characters character : Location.characterList) {
             if (character.getName().equalsIgnoreCase(item)) {
                 character.changeLocation("storeroom");
-                System.out.println("Consume Item: " + item + ".");
+                System.out.println("Consume character: " + item + ".");
                 return;
             }
         }
         for (Furniture furniture : Location.furnitureList) {
             if (furniture.getName().equalsIgnoreCase(item)) {
                 furniture.changeLocation("storeroom");
-                System.out.println("Consume Item: " + item + ".");
+                System.out.println("Consume furniture: " + item + ".");
                 return;
             }
         }
         for (Location theLocation : Location.locationList) {
             if (theLocation.getName().equalsIgnoreCase(item)) {
-                //删除当前位置和消耗位置之间的路径（在其他游戏位置中可能还有通往该位置的其他路径)
+                //Delete the path between the current location and the consumed location
+                //(there may be other paths to this location in other game locations)
                 if(theLocation.getName().equalsIgnoreCase(player.currentLocation)){
                     System.out.println("Cannot delete current location.");
                     return;
@@ -105,7 +106,7 @@ public class GameAction {
         while (iterator.hasNext()) {
             String path = iterator.next();
             String[] thePath = path.split("\\s+");
-            // 检查路径起点和终点是否匹配
+            //Check if the path start and end points match
             if (thePath[0].equalsIgnoreCase(start) && thePath[1].equalsIgnoreCase(end)) {
                 iterator.remove();
                 break;
@@ -125,29 +126,30 @@ public class GameAction {
         for (Artefacts artefact : Location.artefactsList) {
             if (artefact.getName().equalsIgnoreCase(item)) {
                 artefact.changeLocation(player.currentLocation);
-                System.out.println("Produce the item: " + item + ".");
+                System.out.println("Produce the artefact: " + item + ".");
                 return;
             }
         }
         for (Characters character : Location.characterList) {
             if (character.getName().equalsIgnoreCase(item)) {
                 character.changeLocation(player.currentLocation);
-                System.out.println("Produce the item: " + item + ".");
+                System.out.println("Produce the character: " + item + ".");
                 return;
             }
         }
         for (Furniture furniture : Location.furnitureList) {
             if (furniture.getName().equalsIgnoreCase(item)) {
                 furniture.changeLocation(player.currentLocation);
-                System.out.println("Produce the item: " + item + ".");
+                System.out.println("Produce the furniture: " + item + ".");
                 return;
             }
         }
         for (Location theLocation : Location.locationList) {
             if (theLocation.getName().equalsIgnoreCase(item)) {
-                //删除当前位置和消耗位置之间的路径（在其他游戏位置中可能还有通往该位置的其他路径)
+                //Delete the path between the current location and the consumed location
+                //(there may be other paths to this location in other game locations)
                 Location.theMap.add(player.currentLocation + " " + item);
-                System.out.println("The path from " + player.currentLocation + "to " + item + " has occurred.");
+                System.out.println("The path from " + player.currentLocation + " to " + item + " has occurred.");
                 return;
             }
         }
@@ -159,10 +161,10 @@ public class GameAction {
             String droppedItem = inventoryIterator.next();
             for (Artefacts artefact : Location.artefactsList) {
                 if (artefact.getName().equalsIgnoreCase(droppedItem)) {
-                    artefact.changeLocation(player.currentLocation);  // 更改物品位置
-                    artefact.owner = null;  // 清除物品所有者
+                    artefact.changeLocation(player.currentLocation);  //Change item location
+                    artefact.owner = null;  //Clear item owner
                     System.out.println("Because of death, you drop the item: " + droppedItem + ".");
-                    inventoryIterator.remove();  // 使用迭代器安全删除元素
+                    inventoryIterator.remove();//Delete the item
                 }
             }
         }

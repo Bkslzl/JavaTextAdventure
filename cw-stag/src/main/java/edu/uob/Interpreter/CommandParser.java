@@ -1,39 +1,22 @@
 package edu.uob.Interpreter;
 
 import edu.uob.GameOperations.GameAction;
-import edu.uob.GameOperations.Health;
 import edu.uob.Players;
-import edu.uob.Tools.GameLoading;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class CommandParser {
-    public static void handleCommand(String originalCommand){
+    public static void parserHandleCommand(String originalCommand){
         try {
-            String[] findPlayerName = originalCommand.split(":");
-            String currentPlayerName = findPlayerName[0];
-            boolean isThereCurrentPlayer = false;
-            for (Players currentPlayer : Players.playersList) {
-                if (currentPlayerName.equalsIgnoreCase(currentPlayer.name)) {
-                    isThereCurrentPlayer = true;
-                    if (!handleBasicCommand(currentPlayer, originalCommand)) {
-                        System.out.println("Grammar wrong!");
-                    }
-                }
-            }
-            if (!isThereCurrentPlayer) {
-                Players newPlayer = new Players(currentPlayerName, GameLoading.initialLocation);
-                Players.playersList.add(newPlayer);
-                if (!handleBasicCommand(newPlayer, originalCommand)) {
-                    System.out.println("Grammar error!");
-                }
+            Players newPlayer = Players.createNewPlayerIfPossible(originalCommand);
+            if (!handleBasicCommand(newPlayer, originalCommand)) {
+                System.out.println("Grammar error!");
             }
         }catch (ArrayIndexOutOfBoundsException e) {
-            // 捕获数组越界异常并进行处理
             System.out.println("Command/original file error.");
             System.out.println("Array index out of bounds: " + e.getMessage());
         }catch (Exception e) {
-            // 捕获所有其他异常
+            //Catch all other exceptions
             System.out.println("An unexpected error occurred: " + e.getMessage());
         }
     }
@@ -42,8 +25,12 @@ public class CommandParser {
         String originalLowerCaseCommand = originalCommand.toLowerCase();
 
         ArrayList<String> entitiesList = CommandChecker.findAllEntitiesAndStoreInTheList(originalLowerCaseCommand);
+        Set<String> uniqueEntities = new LinkedHashSet<>(entitiesList);
+        entitiesList = new ArrayList<>(uniqueEntities);
 
-        ArrayList<String> actionKeyWords = CommandChecker.checkActionValidationAndFindTheCurrentOne(originalLowerCaseCommand);
+        ArrayList<String> actionKeyWords = CommandChecker.checkActionValidationAndAdd(originalLowerCaseCommand);
+        mergeInvKeywords(actionKeyWords);
+
         if(actionKeyWords.isEmpty()){
             System.out.println("Can not find any actions.");
             return false;
@@ -60,8 +47,10 @@ public class CommandParser {
             actionKeyWord = actionKeyWords.get(0);
         }
 
-        System.out.println(actionKeyWord);
+        return commandInterpreter(actionKeyWord, player, entitiesList);
+    }
 
+    private static boolean commandInterpreter(String actionKeyWord, Players player, ArrayList<String> entitiesList){
         if(actionKeyWord.equalsIgnoreCase("goto")){
             return GotoInterpreter.handleCommandGoto(player, entitiesList);
         }
@@ -86,7 +75,15 @@ public class CommandParser {
             GameAction theAction = CommandChecker.findTheGameAction(actionKeyWord);
             return ActionInterpreter.handleCommandActions(theAction, player, entitiesList);
         }
+        return false;
+    }
 
-        return true;
+    private static void mergeInvKeywords(ArrayList<String> actionKeyWords) {
+        boolean containsInv = actionKeyWords.contains("inv");
+        boolean containsInventory = actionKeyWords.contains("inventory");
+
+        if (containsInv && containsInventory) {
+            actionKeyWords.removeAll(List.of("inventory"));
+        }
     }
 }

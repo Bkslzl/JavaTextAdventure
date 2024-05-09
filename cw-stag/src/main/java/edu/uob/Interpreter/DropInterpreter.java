@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class DropInterpreter {
     public static boolean handleCommandDrop(Players player, ArrayList<String> entitiesList){
         if(entitiesList.size() != 1){
-            System.out.println("Can not drop more than one items at a time.");
+            System.out.println("Can not find the item or drop more than one items at a time.");
             return false;
         }
         for(Characters character : Location.characterList){

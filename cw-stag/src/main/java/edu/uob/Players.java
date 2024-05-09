@@ -1,5 +1,7 @@
 package edu.uob;
 
+import edu.uob.Tools.GameLoading;
+
 import java.util.ArrayList;
 
 public class Players {
@@ -16,8 +18,16 @@ public class Players {
         this.health = 3;
     }
 
-    public void pickUpItem(String item){
-        this.inventory.add(item);
+    public static Players createNewPlayerIfPossible(String originalCommand){
+        String[] findPlayerName = originalCommand.split(":");
+        String currentPlayerName = findPlayerName[0];
+        for (Players currentPlayer : Players.playersList) {
+            if (currentPlayerName.equalsIgnoreCase(currentPlayer.name)) {
+                return currentPlayer;
+            }
+        }
+        Players newPlayer = new Players(currentPlayerName, GameLoading.initialLocation);
+        Players.playersList.add(newPlayer);
+        return newPlayer;
     }
-
 }

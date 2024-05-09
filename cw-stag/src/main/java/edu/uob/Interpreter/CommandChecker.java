@@ -12,17 +12,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandChecker {
-    // 初始化有效命令集合
+    //Initialize the sets of valid commands
     public static Set<String> VALID_ACTIONS = new HashSet<>();
     public static Set<String> VALID_ENTITIES = new HashSet<>();
 
-    // 初始化方法
     public static void initializeGameData() {
-        // 初始化 VALID_ACTIONS
+        //Initialize VALID_ACTIONS
         VALID_ACTIONS.addAll(Set.of("inventory", "inv", "get", "drop", "goto", "look", "health"));
         VALID_ACTIONS.addAll(GameAction.hashActions.keySet());
 
-        // 从已存在的hashActions获取所有命令
+        //Get all commands from existing hashActions
         VALID_ACTIONS.addAll(GameAction.hashActions.keySet());
 
         for(GameEntity entity : Location.artefactsList){
@@ -39,10 +38,10 @@ public class CommandChecker {
         }
     }
 
-    public static ArrayList<String> checkActionValidationAndFindTheCurrentOne(String originalCommand) {
+    public static ArrayList<String> checkActionValidationAndAdd(String originalCommand) {
         ArrayList<String> actionCommands = new ArrayList<>();
         for (String command : VALID_ACTIONS) {
-            // 构建正则表达式，使用\b来标记单词的边界
+            //Construct regular expressions to ensure correct matching of action keywords
             Pattern pattern = Pattern.compile("(?<!\\S)" + Pattern.quote(command) + "(?!\\S)", Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(originalCommand);
 
@@ -50,7 +49,7 @@ public class CommandChecker {
                 actionCommands.add(command);
             }
         }
-        return actionCommands; // 返回找到的命令，如果没有找到则为 null
+        return actionCommands; //Return the command found, or null if not found
     }
 
     public static ArrayList<String> findAllEntitiesAndStoreInTheList(String originalCommand) {
@@ -70,7 +69,7 @@ public class CommandChecker {
         HashSet<GameAction> retrievedActions = GameAction.hashActions.get(actionKeyWord);
         if (retrievedActions != null && !retrievedActions.isEmpty()) {
             Iterator<GameAction> iterator = retrievedActions.iterator();
-            return iterator.next();  // 获取第一个元素
+            return iterator.next();//Get the first element
         } else {
             System.out.println("No actions available for the keyword: " + actionKeyWord);
             return null;
@@ -85,7 +84,7 @@ public class CommandChecker {
 
         for(String singleAction : actionCommands){
 
-            //先判读有没有基础型符合需求
+            //First determine whether there is a basic action that meets the needs
             int originalSize = validActions.size();
             if(checkIfOneBasicActionsValid(singleAction, validActions, player,entitiesList)){
                 if(originalSize != validActions.size()) {
@@ -94,19 +93,24 @@ public class CommandChecker {
                 continue;
             }
 
+            //Then judge the advanced actions
             GameAction theAction = findTheGameAction(singleAction);
+            if(theAction == null){
+                return null;
+            }
 
-            //首先判断subjects关键词对不对
+            //Determine whether the subjects keywords are correct
             boolean subjectsKeyWords = ActionInterpreter.checkIfThereIsAtLeastOneSubject(theAction, entitiesList);
-
-            //检查是否有这些必须道具
+            //Check if player has these necessary items
             boolean subjects = ActionInterpreter.checkIfHaveAllSubjects(player, theAction, entitiesList);
-
+            //All are eligible to be added to the valid actionList
             if(subjectsKeyWords && subjects){
                 validActions.add(singleAction);
                 currentAction = singleAction;
             }
         }
+
+        //Find valid actions number
         int validActionsNumber = countUniqueGameActionsNumber(validActions);
         if(validActionsNumber == 1){
             return currentAction;
@@ -136,7 +140,7 @@ public class CommandChecker {
                 uniqueActions.add(theAction);
             }
         }
-        return uniqueActions.size() + basicActionsNumber; // 返回不同GameAction对象的数量
+        return uniqueActions.size() + basicActionsNumber; //Return the number of different GameAction objects
     }
 
     private static boolean checkIfOneBasicActionsValid(String singleAction,
@@ -188,8 +192,8 @@ public class CommandChecker {
 
     private static boolean checkIfEntitiesSatisfyDrop(Players player, ArrayList<String> entitiesList){
         int entitiesNumber = 0;
-        for(String invItem : player.inventory){//满足在背包
-            for(String entity : entitiesList) {//被关键词提到
+        for(String invItem : player.inventory){//In Inventory
+            for(String entity : entitiesList) {//Mentioned by keywords
                 if (invItem.equalsIgnoreCase(entity)){
                     entitiesNumber++;
                 }
@@ -200,9 +204,9 @@ public class CommandChecker {
 
     private static boolean checkIfEntitiesSatisfyGoto(Players player, ArrayList<String> entitiesList){
         int entitiesNumber = 0;
-        for(String currentEntity : entitiesList){//要在关键词
-            for(Location location : Location.locationList){//要是地点
-                if(currentEntity.equalsIgnoreCase(location.getName()) &&//要有路
+        for(String currentEntity : entitiesList){//Mentioned by keywords
+            for(Location location : Location.locationList){//Need to be location
+                if(currentEntity.equalsIgnoreCase(location.getName()) &&//Need be a path
                         checkIfThereIsAPath(player, currentEntity)){
                     entitiesNumber++;
                 }
@@ -217,7 +221,7 @@ public class CommandChecker {
             String start = twoLocations[0];
             String end = twoLocations[1];
             if(end.equalsIgnoreCase(destination) && start.equalsIgnoreCase(player.currentLocation)){
-                return true;//确实有路
+                return true;//There is a path
             }
         }
         return false;

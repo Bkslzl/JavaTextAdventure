@@ -1,9 +1,6 @@
 package edu.uob.Interpreter;
 
-import edu.uob.Entities.Artefacts;
-import edu.uob.Entities.Characters;
-import edu.uob.Entities.Furniture;
-import edu.uob.Entities.Location;
+import edu.uob.Entities.*;
 import edu.uob.GameOperations.GameAction;
 import edu.uob.Players;
 
@@ -17,31 +14,31 @@ public class ActionInterpreter {
             return false;
         }
 
-        //首先判断subjects关键词对不对
+        //First, determine whether the subjects keywords are correct or not.
         if(!checkIfThereIsAtLeastOneSubject(theAction, entitiesList)){
             System.out.println("None of the required entities are mentioned.");
             return false;
         }
 
-        //检查是否有这些必须道具
+        //Check if you have these necessary items
         if(!checkIfHaveAllSubjects(player, theAction, entitiesList)){
             System.out.println("You do not have enough items.");
             return false;
         }
 
-        //检查是否有冗余subject
+        //Check if there are redundant subjects
         if(ifCommandHasExtraEntities(entitiesList, theAction)){
             System.out.println("You give too many entities.");
             return false;
         }
 
-        //检查生成的道具是否在别人背包里
+        //Check whether the generated items are in someone else's backpack
         if(checkIfOtherPlayerHasTheProducedItem(theAction, player)){
             System.out.println("Other player has the produced item, so you cannot do that.");
             return false;
         }
 
-        //可以执行了
+        //Ready to go
         theAction.action(player);
         return true;
     }
@@ -78,7 +75,7 @@ public class ActionInterpreter {
     }
 
     public static boolean checkIfHaveAllSubjects(Players player, GameAction theAction, ArrayList<String> entitiesList){
-        //先去地图上找,和背包里
+        //First look for it on the map and in the inventory
         for(String neededItem : theAction.neededEntities) {
             if (!(checkIfTheItemInTheInventory(neededItem, player) ||
                     checkIfTheItemInTheLocation(neededItem, player.currentLocation))){
@@ -89,23 +86,15 @@ public class ActionInterpreter {
     }
 
     private static boolean checkIfTheItemInTheLocation(String item, String location){
-        for (Artefacts artefact : Location.artefactsList) {
-            if (artefact.getName().equalsIgnoreCase(item) && artefact.getLocation().equalsIgnoreCase(location)) {
-                return true;
-            }
-        }
-        for (Characters character : Location.characterList) {
-            if (character.getName().equalsIgnoreCase(item) && character.getLocation().equalsIgnoreCase(location)) {
-                return true;
-            }
-        }
-        for (Furniture furniture : Location.furnitureList) {
-            if (furniture.getName().equalsIgnoreCase(item) && furniture.getLocation().equalsIgnoreCase(location)) {
-                return true;
-            }
-        }
-        for (Location theLocation : Location.locationList) {
-            if (theLocation.getName().equalsIgnoreCase(item) && theLocation.getLocation().equalsIgnoreCase(location)) {
+        return findItemWithNameAndLocation(item, location, Location.artefactsList) ||
+                findItemWithNameAndLocation(item, location, Location.characterList) ||
+                findItemWithNameAndLocation(item, location, Location.furnitureList) ||
+                findItemWithNameAndLocation(item, location, Location.locationList);
+    }
+
+    private static boolean findItemWithNameAndLocation(String item, String location, ArrayList<? extends GameEntity> itemsList){
+        for (GameEntity theItem : itemsList) {
+            if (theItem.getName().equalsIgnoreCase(item) && theItem.getLocation().equalsIgnoreCase(location)) {
                 return true;
             }
         }
@@ -122,15 +111,13 @@ public class ActionInterpreter {
     }
 
     private static boolean ifCommandHasExtraEntities(ArrayList<String> entitiesList, GameAction theAction){
-        // 将 neededEntities 转换为 HashSet 以提高查找效率
         HashSet<String> neededSet = new HashSet<>(theAction.neededEntities);
-
-        // 检查 entitiesList 中的每个元素是否都在 neededSet 中
+        //Check if each element in entitiesList is in neededSet
         for (String entity : entitiesList) {
             if (!neededSet.contains(entity)) {
-                return true;  // 发现冗余元素
+                return true;  //Find redundant element
             }
         }
-        return false;  // 所有元素都是必需的
+        return false;  //All elements are required
     }
 }

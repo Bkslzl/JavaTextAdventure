@@ -8,7 +8,6 @@ import edu.uob.Players;
 
 public class Look {
     public static void printAllThingsInCurrentLocation(Players player){
-        //System.out.println("All entities are shown below:");
         for(Location location : Location.locationList){
             if(location.getName().equalsIgnoreCase(player.currentLocation)){
                 System.out.println("You are in location: " + location.getName() + "  Description: " + location.getDescription());
@@ -17,17 +16,17 @@ public class Look {
 
         for(Artefacts artefact : Location.artefactsList){
             if(artefact.getLocation().equalsIgnoreCase(player.currentLocation)){
-                System.out.println("Name: " + artefact.getName() + "  Description: " + artefact.getDescription());
+                System.out.println("Artefact: " + artefact.getName() + "  Description: " + artefact.getDescription());
             }
         }
         for(Characters character : Location.characterList){
             if(character.getLocation().equalsIgnoreCase(player.currentLocation)){
-                System.out.println("Name: " + character.getName() + "  Description: " + character.getDescription());
+                System.out.println("Character: " + character.getName() + "  Description: " + character.getDescription());
             }
         }
         for(Furniture furniture : Location.furnitureList){
             if(furniture.getLocation().equalsIgnoreCase(player.currentLocation)){
-                System.out.println("Name: " + furniture.getName() + "  Description: " + furniture.getDescription());
+                System.out.println("Furniture: " + furniture.getName() + "  Description: " + furniture.getDescription());
             }
         }
         for(Players otherPlayer : Players.playersList){

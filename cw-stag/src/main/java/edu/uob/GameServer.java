@@ -48,7 +48,7 @@ public final class GameServer {
         Output.changeOutputStream();
         Output.data.reset();
 
-        CommandParser.handleCommand(command);
+        CommandParser.parserHandleCommand(command);
 
         return Output.data.toString();
     }
