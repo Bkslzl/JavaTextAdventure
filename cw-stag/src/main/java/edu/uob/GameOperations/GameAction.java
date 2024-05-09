@@ -84,7 +84,7 @@ public class GameAction {
                     return;
                 }
                 removePath(player.currentLocation, item);
-                System.out.println("The path to " + item + " has been removed.");
+                System.out.println("The path form " + player.currentLocation + " to " + item + " has been removed.");
                 return;
             }
         }
@@ -101,7 +101,7 @@ public class GameAction {
         }
     }
 
-    public static void removePath(String start, String end) {
+    private static void removePath(String start, String end) {
         Iterator<String> iterator = Location.theMap.iterator();
         while (iterator.hasNext()) {
             String path = iterator.next();

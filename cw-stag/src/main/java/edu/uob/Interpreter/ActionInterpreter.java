@@ -78,7 +78,8 @@ public class ActionInterpreter {
         //First look for it on the map and in the inventory
         for(String neededItem : theAction.neededEntities) {
             if (!(checkIfTheItemInTheInventory(neededItem, player) ||
-                    checkIfTheItemInTheLocation(neededItem, player.currentLocation))){
+                    checkIfTheItemInTheLocation(neededItem, player.currentLocation) ||
+                    checkIfTheItemIsLocation(neededItem, player))){
                 return false;
             }
         }
@@ -108,6 +109,11 @@ public class ActionInterpreter {
             }
         }
         return false;
+    }
+
+    private static boolean checkIfTheItemIsLocation(String item, Players player){
+        //Check if the needed entity is a location
+        return player.currentLocation.equalsIgnoreCase(item);
     }
 
     private static boolean ifCommandHasExtraEntities(ArrayList<String> entitiesList, GameAction theAction){

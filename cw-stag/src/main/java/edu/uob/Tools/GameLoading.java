@@ -203,18 +203,19 @@ public class GameLoading {
         CommandChecker.VALID_ENTITIES.clear();
     }
 
-/*    public static void main(String[] args){
-        File entitiesFile = new File("config" + File.separator + "extended-entities.dot");//basic-entities.dot, extended-entities.dot
-        File actionsFile = new File("config" + File.separator + "extended-actions.xml");//basic-actions.xml, extended-actions.xml
+  /*  public static void main(String[] args){
+        File entitiesFile = new File("config" + File.separator + "basic-entities.dot");//basic-entities.dot, extended-entities.dot
+        File actionsFile = new File("config" + File.separator + "basic-actions.xml");//basic-actions.xml, extended-actions.xml
         loadGameData(entitiesFile, actionsFile);
         System.out.println("1");
 
-        *//*CommandParser.parserHandleCommand("Sion: " + "goto forest");
+        CommandParser.parserHandleCommand("Sion: " + "goto forest");
+        CommandParser.parserHandleCommand("Sion: " + "look");
         CommandParser.parserHandleCommand("Sion: " + "get key");
         CommandParser.parserHandleCommand("Sion: " + "goto cabin");
         CommandParser.parserHandleCommand("Sion: " + "inv");
         CommandParser.parserHandleCommand("Sion: " + "open key");
-        CommandParser.parserHandleCommand("Li: " + "get key");*//*
+        CommandParser.parserHandleCommand("Li: " + "get key");
 
         Scanner scanner = new Scanner(System.in);
         while (true) {

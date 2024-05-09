@@ -9,6 +9,7 @@ public class CommandParser {
     public static void parserHandleCommand(String originalCommand){
         try {
             Players newPlayer = Players.createNewPlayerIfPossible(originalCommand);
+            originalCommand = originalCommand.replaceAll("[,.!:?]", " ");
             if (!handleBasicCommand(newPlayer, originalCommand)) {
                 System.out.println("Grammar error!");
             }
